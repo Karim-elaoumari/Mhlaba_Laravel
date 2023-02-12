@@ -1,6 +1,12 @@
 <?php
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PlatController;
+
 use Illuminate\Support\Facades\Route;
+use App\Models\Plat;
+use App\Models\User;
+use App\Models\Categorie;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +20,23 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware(['auth'])->group(function () {
     Route::get('/logout',[UserController::class,'logout'])->name('logout');
-    Route::get('/', function (){
-        return view('pages.home')->with('title','home');
-     });
+    Route::get('publisher/store', function (){
+        return view('publisher.store',[
+            'plats'=> Plat::with('categorie')->where('user_id',Auth::user()->id)->latest()->paginate(6),
+            'count_plats' =>Plat::with('categorie')->where('user_id',Auth::user()->id)->count(),
+            'categories' =>Categorie::all()
+        ])->with('title','home');
+     })->name('store');
+     Route::resource('Plat', PlatController::class);
+
+   
+    
 });
+Route::get('/', function (){
+    return view('pages.home',[
+        'plats' => Plat::latest()->take(15)->get()
+    ])->with('title','home');
+ })->name("home");
 Route::get('/admin', function (){
     return view('admin.dashboard')->with('title','dashboard');
  })->middleware('isAdmin');

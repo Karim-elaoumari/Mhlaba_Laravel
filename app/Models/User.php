@@ -18,4 +18,8 @@ class User extends Authenticatable
         'account_status',
         'token'
     ];
+    public function products()
+    {
+        return $this->hasMany(Plat::class);
+    }
 }

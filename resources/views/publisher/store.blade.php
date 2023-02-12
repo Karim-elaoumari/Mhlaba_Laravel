@@ -68,10 +68,11 @@
   </nav>
   <nav style="min-width:100%;" class="bg-white row p-3" aria-label="breadcrumb">
     <ol class="breadcrumb col ms-2">
-      <li class="breadcrumb-item"><a href="{{route('store')}}">Dashboard</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Users</li>
+      <li class="breadcrumb-item"><a href="{{route('store')}}">Publisher</a></li>
+      <li class="breadcrumb-item active" aria-current="page">store</li>
     </ol>
     @auth
+        
        
     <span class="nav-link active col-7 fs-3 " aria-current="page" href="#"> Welcome {{Auth::user()->username}}</span>
 
@@ -81,18 +82,78 @@
 @endauth
   </nav>
   <section>
-    <div class="d-flex">
-        <h4 class="ms-3 col">All Users:</h4>
-            <button type="button" class="  btn btn-primary btn-rounded text-end me-3 " data-bs-toggle="modal" data-bs-target="#exampleModal">+ Add Plat</button>
+    <div class="row g-3 d-flex justify-content-around  p-3">
+        <div class="col-lg-3 col-md-5 col-11 ">
+            <div class="p-3 shadow-sm d-flex bg-white justify-content-around align-items-center rounded border">
+                <div>                      
+                    <h3 class="fs-2 mycolor">
+                    {{$count_plats}}                            </h3>
+
+                    <p class="fs-5 text-black">Plats</p>
+                </div>    
+               
+                <i class="uil uil-edit-alt fs-3 mycolor box rounded py-2  px-3"></i>          
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-5 col-11 ">
+            <div class="p-3 shadow-sm d-flex bg-white justify-content-around align-items-center rounded border">
+                <div>                      
+                    <h3 class="fs-2 mycolor">
+                    {{count($categories)}}         </h3>
+
+                    <p class="fs-5 text-black">Categories</p>
+                </div>    
+               
+                <i class="uil uil-edit-alt fs-3 mycolor box rounded py-2  px-3"></i>          
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-5 col-11">
+            <div class="p-3 shadow-sm d-flex bg-white justify-content-around align-items-center rounded border">
+                <div>
+             
+
+                    <h3 class="fs-2 mycolor">
+                       1                                </h3>
+
+                    <p class="fs-5 text-black">Admins</p>
+                </div>
+                <i class="uil uil-book-reader fs-3 mycolor box rounded py-2  px-3 "></i>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-5 col-11">
+            <div class="p-3  shadow-sm d-flex bg-white justify-content-around align-items-center rounded  border"> 
+                <div>
+                    <h3 class="fs-2 mycolor">8</h3>
+                    <p class="fs-5 text-black">Articles</p>
+                </div>
+                <i class="uil uil-bookmark fs-3 mycolor rounded py-2  px-3 box"></i>
+                
+            </div>
+        </div>
+
+        
+        
     </div>
+    <div class="d-flex">
+        <h4 class="ms-3 col">All Your Plats:</h4>
+     
+            <button type="button" class="  btn btn-primary btn-rounded text-end me-3 " data-bs-toggle="modal" data-bs-target="#exampleModal">+ Add Plat</button>
+
+   
+
+    </div>
+      
       <div class="table-responsive p-3">
       <table class="table bg-black text-white">
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">E-mail</th>
-            <th scope="col">Status</th>
+            <th scope="col">Title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Categorie</th>
             <th scope="col "class="text-end pe-5">Action</th>
           </tr>
         </thead>

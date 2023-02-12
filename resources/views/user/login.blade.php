@@ -46,7 +46,8 @@
                 
                 <button type="submit" class="btn btn-success btn-lg mb-2 ms-5">Submit</button><br>
                 <a href="register" >Dont have Account Yet</a>
-                <a href="forget-pass" >Forget My Password</a>
+                <a href="forget-pass" class="ms-3" >Forget My Password</a>
+                <a href="/" class="ms-3" >Go Home </a>
               </form>
             </div>
           </div>

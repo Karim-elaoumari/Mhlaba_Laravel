@@ -57,6 +57,7 @@
                     </div>
                   </div>
                 <button type="submit" class="btn btn-success btn-lg mb-1">Submit</button>
+                 <a href="/" class="ms-3" >Go Home </a>
               </form>
              
             </div>

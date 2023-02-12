@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -43,11 +43,11 @@ class UserController extends Controller
         'email' =>'required',
         'password' => 'required',
        ]);
-       $remember = $req->has('remember');
-       if(Auth::attempt(['email' => $req->email, 'password' => $req->password])){
-        $req->session()->regenerate();
-        if($remember)   Auth::login(Auth::user());
-        return redirect()->intended('/');
+       $credentials = $req->only('email', 'password');
+
+       if (Auth::attempt($credentials, $req->has('remember'))) {
+           // Authentication passed...
+           return redirect()->intended('/');
        }
        return  redirect()->back()->with('password',"Wrong Password Or E-mail Try Again");
     }
@@ -56,8 +56,6 @@ class UserController extends Controller
     }
     public function logout(Request $req){
         Auth::logout();
-        $req->session()->invalidate();
-        $req->session()->regenerateToken();
         return redirect('/');
     }
     public function reset_pass(request $req,$token=null){
@@ -88,7 +86,7 @@ class UserController extends Controller
         $token = User::where('email', $req->email)->first()->token;
         $action_link = route('reset.password',['token'=>$token,'email'=>$req->email]);
         $body = "we have sent  to you a reset link to get access to change you pass";
-        \Mail::send('user.resetMail',['body'=>$body,'action_link'=>$action_link], function ($message) use ($req) {
+        Mail::send('user.resetMail',['body'=>$body,'action_link'=>$action_link], function ($message) use ($req) {
             $message->from('elaoumarikarim@gmail.com', 'John Doe');
             $message->to($req->email,'user');
             $message->replyTo('elaoumarikarim@gmail.com', 'John Doe');

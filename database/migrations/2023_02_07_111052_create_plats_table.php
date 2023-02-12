@@ -17,7 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('desc');
-            $table->double('amount', 8, 2);
+            $table->string("image");
+            $table->foreignId('categorie_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->double('price', 8, 2);
             $table->timestamps();
         });
     }
