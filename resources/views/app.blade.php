@@ -17,10 +17,9 @@
    
     <title>@yield('title',$title)</title>
 </head>
-<body style="background-color: #8fc4b7;">
-    <div>
+<body style="background-color: #8fc4b7;width:100%">
+    
         @yield('content')
-    </div>
 </body>
 
 

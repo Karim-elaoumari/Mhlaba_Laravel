@@ -25,7 +25,7 @@
           <!-- Email input -->
           <div class="row g-1">
             <div class=" col form-outline mb-4">
-                <input type="number" name="price" id="price" class="form-control price" />
+                <input type="number" name="price" id="price" class="form-control price" step="0.01"/>
                 <label class="form-label" for="form7Example2">Price</label>
                 <p class="error_message text-danger" id="price_err"></p>
             </div>

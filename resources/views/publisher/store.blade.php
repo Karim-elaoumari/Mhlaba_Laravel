@@ -16,13 +16,24 @@
               Pages
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">My Porfile</a></li>
-              <li><a class="dropdown-item" href="#">My Store</a></li>
+              @auth
+              <li><a class="dropdown-item" href="{{ route('user.profile')}}">My Porfile</a></li>
+           
+            <li><a class="dropdown-item" href="{{route('store')}}">My Store</a></li>
+            @endauth
+             
+            @auth
+            @if (Auth::user()->role==2)
+            <li><a class="dropdown-item" href="{{ route('admin.dash')}}">My Dashboard</a></li>
+          @endif
+            @endauth
+             
+            
             </ul>
 
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">Plats</a>
+            <a class="nav-link active" href="{{route('plats')}}">Plats</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -66,10 +77,11 @@
       </div>
     </div>
   </nav>
-  <nav style="min-width:100%;" class="bg-white row p-3" aria-label="breadcrumb">
+  <nav style="margin:0" class="bg-white row p-3" aria-label="breadcrumb">
     <ol class="breadcrumb col ms-2">
       <li class="breadcrumb-item"><a href="{{route('store')}}">Publisher</a></li>
       <li class="breadcrumb-item active" aria-current="page">store</li>
+      
     </ol>
     @auth
         
@@ -154,7 +166,13 @@
             <th scope="col">Title</th>
             <th scope="col">Price</th>
             <th scope="col">Categorie</th>
+            <th scope="col">Updated At</th>
+            @if(Auth::user()->role==2)
+            <th scope="col">publisher</th>
+        
+            @endif
             <th scope="col "class="text-end pe-5">Action</th>
+         
           </tr>
         </thead>
         <tbody>
@@ -164,6 +182,11 @@
                 <td>{{$plat->title}}</td>
                 <td>{{$plat->price}}</td>
                 <td>{{$plat->categorie->name}}</td>
+                <td>{{$plat->updated_at->diffForhumans()}}</td>
+                @if(Auth::user()->role==2)
+                <td>{{$plat->user->username}}</td>
+        
+               @endif
                 <td class="text-end"><button type="button"  data-id="{{ $plat->id }}" id="edit-plat" class="btn btn-success btn-sm me-2" style="width:60px" id="edit-plat">Edit</button><button type="button"   data-id="{{ $plat->id }}"  class="btn btn-danger btn-sm" id="delete-plat">Delete</button></td>
             </tr>
             @endforeach

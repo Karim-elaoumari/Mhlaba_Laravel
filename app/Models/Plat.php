@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class Plat extends Model
 {
     use HasFactory;
@@ -28,4 +30,5 @@ class Plat extends Model
     {
         return $this->belongsTo(Categorie::class);
     }
+
 }

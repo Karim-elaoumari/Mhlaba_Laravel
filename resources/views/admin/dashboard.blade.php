@@ -16,13 +16,24 @@
               Pages
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">My Porfile</a></li>
-              <li><a class="dropdown-item" href="#">My Store</a></li>
+              @auth
+              <li><a class="dropdown-item" href="{{ route('user.profile')}}">My Porfile</a></li>
+            
+            <li><a class="dropdown-item" href="{{route('store')}}">My Store</a></li>
+            @endauth
+             
+            @auth
+            @if (Auth::user()->role==2)
+            <li><a class="dropdown-item" href="{{ route('admin.dash')}}">My Dashboard</a></li>
+          @endif
+            @endauth
+             
+            
             </ul>
 
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">Plats</a>
+            <a class="nav-link active" href="{{route('plats')}}">Plats</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -66,7 +77,7 @@
       </div>
     </div>
   </nav>
-  <nav style="min-width:100%;" class="bg-white row p-3" aria-label="breadcrumb">
+  <nav style="margin:0" class="bg-white row p-3" aria-label="breadcrumb">
     <ol class="breadcrumb col ms-2">
       <li class="breadcrumb-item"><a href="{{route('store')}}">Dashboard</a></li>
       <li class="breadcrumb-item active" aria-current="page">Users</li>
@@ -80,7 +91,7 @@
 
 @endauth
   </nav>
-  <section>
+  <section class="mt-3">
     <div class="d-flex">
         <h4 class="ms-3 col">All Users:</h4>
             <button type="button" class="  btn btn-primary btn-rounded text-end me-3 " data-bs-toggle="modal" data-bs-target="#exampleModal">+ Add Plat</button>
@@ -97,25 +108,35 @@
           </tr>
         </thead>
         <tbody>
-            @foreach ($plats as $plat)
+            @foreach ($users as $user)
             <tr>
                 <th scope="row">{{ $loop->index+1}}</th>
-                <td>{{$plat->title}}</td>
-                <td>{{$plat->price}}</td>
-                <td>{{$plat->categorie->name}}</td>
-                <td class="text-end"><button type="button"  data-id="{{ $plat->id }}" id="edit-plat" class="btn btn-success btn-sm me-2" style="width:60px" id="edit-plat">Edit</button><button type="button"   data-id="{{ $plat->id }}"  class="btn btn-danger btn-sm" id="delete-plat">Delete</button></td>
+                <td>{{$user->username}}</td>
+                <td>{{$user->email}}</td>
+                <td>
+                       @if ($user->role==0)
+                        User
+                        @elseif($user->role==1)
+                            Publisher
+                        @else
+                            Super Admin
+                        @endif
+                </td>
+                <td class="text-end"><button type="button"  data-id="{{ $user->id }}"  class="btn btn-success btn-sm me-2" style="width:130px" id="change_role"> 
+                   @if ($user->role==0)
+                   Switch to Publisher
+                  @else
+                  Switch to User
+                  @endif</button></td>
             </tr>
             @endforeach
 
         </tbody>
       </table>
-      {!!$plats->links()!!}
+      {!!$users->links()!!}
     </div>
   </section>
 
-
-@include('modals.add_plat',['categories'=>$categories])
-@include('modals.edit_plat',['categories'=>$categories])
 @include('ajax.store')
 
 

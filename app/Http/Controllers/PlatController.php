@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Plat;
+use Illuminate\Support\Str;
 class PlatController extends Controller
 {
     /**
@@ -51,17 +52,21 @@ class PlatController extends Controller
     
        
     );
+   
+
+    
     $image = $request->file('image');
     $image_name = time().'.'.$image->getClientOriginalExtension();
     $destinationPath = public_path('/images');
     $image->move($destinationPath, $image_name);
-   
+
     $plat= new Plat;
     $plat->title = $request->title;
-    $plat->price = $request->price;
+    $plat->slug =  Str::slug($request->title,'-');
+    $plat->price =  $request->price;
     $plat->desc =  $request->description;
-    $plat->categorie_id =    $request->categorie;
-    $plat->image = $image_name;
+    $plat->categorie_id =  $request->categorie;
+    $plat->image =  $image_name;
     $plat->user_id = Auth::user()->id;
     $plat->save();
  
@@ -78,7 +83,7 @@ class PlatController extends Controller
      */
     public function show($id)
     {
-        //
+       
     }
 
     /**
@@ -108,11 +113,7 @@ class PlatController extends Controller
             'description' => 'required',
             'categorie' => 'required',
         ]);
-        $plat = Plat::find($id);
-        $plat->title = $request->title;
-        $plat->price = $request->price;
-        $plat->desc = $request->description;
-        $plat->categorie_id = $request->categorie;
+       
     
         if ($request->hasFile('image')) {
             // delete old image
@@ -126,8 +127,14 @@ class PlatController extends Controller
             $image->move(public_path('images/'), $imageName);
             $plat->image = $imageName;
         }
+        $plat = Plat::find($id);
+        $plat->title = $request->title;
+        $plat->slug =  Str::slug($plat->title,'-');
+        $plat->price = $request->price;
+        $plat->desc = $request->description;
+        $plat->categorie_id = $request->categorie;
     
-        $plat->save();
+        $plat->update();
     
         return response()->json([ 'status' => 'success']);
     }

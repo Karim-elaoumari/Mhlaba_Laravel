@@ -25,7 +25,8 @@ class UserController extends Controller
             'username' => $req->username,
             'email'    =>$req->email,
             'password' =>Hash::make($req->password),
-            'account_status'  =>0,
+            'role'  =>0,
+            'account_status'=>0,
             'token'           =>Str::random(60)
         ]);
         $user->save();
@@ -93,5 +94,61 @@ class UserController extends Controller
             $message->subject('reset password');
         });
         return   redirect()->back()->with('success',"Email send sunnccces ");
+    }
+    public function update_name(request  $req){
+        $req->validate([
+            'name'=> 'required',
+            'password' =>'required'
+        ]);
+        $user = Auth::user();
+        if (!Hash::check($req->input('password'), $user->password)) {
+            return redirect()->back()->withErrors(['password' => 'Last password is incorrect'])->withInput();
+        }
+        User::where('id',$user->id)->update([
+            "username"=>$req->name,
+        ]);
+        return   redirect()->back()->with('success_name',"Name Updated successufuly");
+
+
+    }
+    public function update_password(request  $req){
+        $req->validate([
+            'last_password' => 'required',
+            'new_password' => 'required|min:5|max:14|regex:/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,14}$/',
+            'conf_password' => 'required|same:new_password'
+        ], [
+            'last_password.required' => 'Last password is required',
+            'new_password.required' => 'Password is required',
+            'new_password.min' => 'Password must be at least 5 characters',
+            'new_password.max' => 'Password cannot be more than 14 characters',
+            'new_password.regex' => 'Password must contain at least one letter and one number',
+            'conf_password.required' => 'Confirm password is required',
+            'conf_password.same' => 'Password and confirm password must match'
+        ]);
+        // Get the current user
+        $user = Auth::user();
+    
+        // Check if the last password matches the password stored in the database
+        if (!Hash::check($req->input('last_password'), $user->password)) {
+            return redirect()->back()->withErrors(['last_password' => 'Last password is incorrect'])->withInput();
+        }
+
+        User::where('id',$user->id)->update([
+            "password"=>Hash::make($req->new_password),
+        ]);
+        return   redirect()->back()->with('success_name',"Password Updated successufuly");
+         
+
+    }
+    public function change_status(request $req){
+        $user = User::findOrFail($req->id);
+        if($user->role==0){
+            $user->role = 1;
+        }
+        else{
+            $user->role=0;
+        }
+        $user->save();
+        return response()->json([ 'status' => 'success']);
     }
 }

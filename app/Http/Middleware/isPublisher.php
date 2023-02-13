@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Closure;
 use Illuminate\Http\Request;
 
-class isAdmin
+class isPublisher
 {
     /**
      * Handle an incoming request.
@@ -19,7 +19,7 @@ class isAdmin
         if(!Auth::check()){
             return route('login');
         }
-        elseif(Auth::user()->role!=2){
+        elseif(Auth::user()->role==0){
             abort(403, 'Access Denied');
         }
         return $next($request);

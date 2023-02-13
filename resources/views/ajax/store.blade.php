@@ -174,4 +174,52 @@ $(document).on('click', '#delete-plat', function() {
  
 });
 
+
+$(document).on('click', '#change_role', function() {
+  let id = $(this).data('id');
+  Swal.fire({
+  title: 'Are you sure?',
+  text: "You whant To change Role of this User",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, Change!'
+}).then((result) => {
+  if (result.isConfirmed) {
+    $.ajax({
+    url: "{{ route('change_status') }}",
+    method: "POST",
+    data: {
+        id: id
+    },
+   
+    success: function(res) {
+        Swal.fire({
+        title: 'Success',
+        text: 'This User has been Changed Role',
+        icon: 'success',
+        confirmButtonText: 'OK'
+
+        }).then((result) =>{
+            location.reload();
+        })
+            
+        },
+    error:function(err){
+        Swal.fire({
+        title: 'Error! Not Found',
+        text: 'This User is not existing Try Again',
+        icon: 'error',
+        confirmButtonText: 'OK'
+        })
+
+
+    }
+  });
+  }
+})
+ 
+});
+
 </script>

@@ -22,7 +22,7 @@ class PlatFactory extends Factory
            'desc' =>fake()->paragraph(),
            'image'=> fake()->imageUrl(),
            'categorie_id' => fake()->numberBetween(Categorie::min('id'),Categorie::max('id')),
-            'user_id' => fake()->numberBetween(User::min('id'),User::max('id')),
+           'user_id' => fake()->numberBetween(User::min('id'),User::max('id')),
             'price' =>fake()->randomFloat(2, 0, 100),
         ];
     }
