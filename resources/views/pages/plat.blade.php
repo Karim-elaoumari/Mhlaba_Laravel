@@ -144,6 +144,15 @@
                  <h4>   Description : </h4>
                     {{$plat->desc}}
                 </div>
+                <div class="mt-4 row "> 
+                  <h4 class="col">   Categorie : </h4>
+                     <span class="col">{{$plat->categorie->name}}</span>
+                 </div>
+                 <div class="mt-4 row"> 
+                  <h4 class="col">   Published By : </h4>
+                    <span class="col">{{$plat->user->username}}</span>
+                 </div>
+                 <span class=" mt-4"> Created at : {{$plat->created_at->diffForhumans()}}</span>
 
             </div>
          

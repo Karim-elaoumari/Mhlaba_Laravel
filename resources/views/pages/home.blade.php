@@ -148,7 +148,7 @@
      
       
       <div class="text-center my-2 container">
-        <h2 class="font-weight-light">Some Featured Plats:</h2>
+        <h3 class="font-weight-light">Some Featured Plats:</h3>
         <div class="row mx-auto my-auto justify-content-center ">
             <div id="recipeCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner" role="listbox">
@@ -160,10 +160,10 @@
                         <div class="card text-black" style="width:94%;margin-auto;height:360px">
                           <img src="{{ asset("images/".$plat->image) }}"style="min-height:170px;max-height:170px;"  class="card-img-top" alt="...">
                           <div class="card-body">
-                            <p class="card-text fs-4 ">{{ $plat->title }}</p>
+                            <p class="card-text fs-5 ">{{ $plat->title }}</p>
                             <p class="card-text text-red">Price : {{ $plat->price }} $</p>
-                            <p class="card-text" id="desc">-
-                              {{ substr($plat->desc, 0, 60) }}...
+                            <p class="card-text fs-7" id="desc">Categorie : 
+                              {{ $plat->categorie->name}}
                           </p>
                         
                           </div>

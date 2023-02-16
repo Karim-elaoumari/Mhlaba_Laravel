@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('plats', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            
             $table->string('slug')->unique()->nullable();
             $table->string('desc');
             $table->string("image");
