@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Schema::defaultStringLength(170);
     }
 
     /**
@@ -27,3 +27,6 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
     }
 }
+
+
+
