@@ -17,13 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::factory()
-        ->count(3)
-        ->create();
-        Categorie::factory()
-        ->count(5)
-        ->create();
-        Plat::factory()
-        ->count(20)
+        ->count(1)
         ->create();
     }
 }

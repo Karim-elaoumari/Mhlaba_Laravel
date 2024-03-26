@@ -1,11 +1,12 @@
 <?php
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\PlatController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Plat;
+use App\Models\Product;
 use App\Models\User;
-use App\Models\Categorie;
+use App\Models\Order;
 
 
 /*
@@ -20,75 +21,88 @@ use App\Models\Categorie;
 */
 Route::middleware(['auth'])->group(function (){
     Route::get('/logout',[UserController::class,'logout'])->name('logout');
-    Route::get('user/profile', function (){
-    return view('user.profile',[
-        'categories' =>Categorie::all(),
-        'count_plats' =>Plat::with('categorie')->where('user_id',Auth::user()->id)->count() 
-        ])->with('title','home');
-    })->name("user.profile");
-     Route::post('/update_name',[UserController::class,'update_name'])->name('update_name');
-     Route::post('/update_password',[UserController::class,'update_password'])->name('update_pass');
-});
-
-
-Route::middleware(['isAdmin'])->group(function () {
-    Route::get('admin/dashboard', function (){
-        return view('admin.dashboard',[
-            'users'=>User::where('role', '!=', 2)->latest()->paginate(6),
-            'categories' =>Categorie::all(),
-            ])->with('title','home'); 
-    })->name('admin.dash');
-    Route::post('users', [UserController::class, 'change_status'])->name('change_status');
 });
 
 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('publisher/products', function (){
+         $comand = Product::with('orders')->latest()->paginate(10);
+         return view('publisher.products',[
+        'products'=> $comand,
+        'count_products' =>  Product::count(),
+        'count_orders' =>  Order::count(),
+        'pending_orders' =>  Order::where('status','pending')->count(),
+        'in_delivery_orders' =>  Order::where('status','to_delivery')->count(),
+        'delivered_orders' =>  Order::where('status','delivered')->count(),
+        ])->with('title','home'); })->name('pub_products');
 
-Route::middleware(['isPublisher'])->group(function () {
-    Route::get('publisher/store', function (){
-         if(Auth::user()->role==2)  {
-         $comand = Plat::with('categorie','user')->latest()->paginate(6);
-         }
-         else{
-            $comand =  Plat::with('categorie')->where('user_id',Auth::user()->id)->latest()->paginate(6);
-         }
-         return view('publisher.store',[
-        'plats'=> $comand,
-        'count_plats' =>Plat::with('categorie')->where('user_id',Auth::user()->id)->count(), 
-        'categories' =>Categorie::all()
-        ])->with('title','home'); })->name('store');
-    Route::resource('Plat', PlatController::class);
+    Route::get('publisher/orders', function (){
+        $orders = Order::with('product')->latest()->paginate(10);
+        return view('publisher.orders',[
+        'count_products' =>  Product::count(),
+        'orders'=> $orders,
+        'count_orders' =>  Order::count(),
+        'pending_orders' =>  Order::where('status','pending')->count(),
+        'in_delivery_orders' =>  Order::where('status','to_delivery')->count(),
+        'delivered_orders' =>  Order::where('status','delivered')->count(),
+        ])->with('title','home'); })->name('pub_orders');
+    Route::resource('Product', ProductController::class);
 });
+Route::resource('Order', OrderController::class);
 
 
 Route::get('/', function (){
+    if(request('search_term') && request('search_term')!=""){
+        $search = true;
+        $comand = Product::where('title','like','%'.request('search_term').'%')->withCount('orders')->orderBy('orders_count','desc')->paginate(20);
+    }else{
+        $search = false;
+        $comand = Product::withCount('orders')->orderBy('orders_count','desc')->paginate(20);
+    }
+    
+    // get just 6 products that have the most orders
+    $latest = Product::withCount('orders')->orderBy('orders_count','desc')->take(6)->get();
+
     return view('pages.home',[
-        'plats' => Plat::latest()->take(15)->get()
+        'search' => $search,
+        'products'=> $comand,
+        'latest' => $latest,
+        'count_products' =>  Product::count()
        
     ])->with('title','home');
  })->name("home");
- Route::get('/plats', function (){
-    return view('pages.plats',[
-        'plats' => Plat::with('categorie','user')->latest()->paginate(8)
+
+
+
+
+
+
+
+ Route::get('product/{slug}', function ($slug){
+    $latest = Product::withCount('orders')->orderBy('orders_count','desc')->take(8)->get();
+    return view('pages.product',[
+        'product' => Product::where('slug', $slug)->firstOrFail(),
+        'products' => $latest
     ])->with('title','home');
- })->name("plats");
+ })->name("single_product");
 
 
- Route::get('plat/{slug}', function ($slug){
-    return view('pages.plat',[
-        'plat' => Plat::where('slug', $slug)->firstOrFail()
-    ])->with('title','home');
- })->name("single_plat");
+ Route::get('contact', function (){
+    return view('pages.contact',[
+    ])->with('title','contact');
+ })->name("contact");
 
 
 
-Route::get('/register',[UserController::class,'register'])->name('register');
-Route::post('register',[UserController::class,'register_action'])->name('register.action');
-Route::get('/login',[UserController::class,'login'])->name('login');
+ Route::get('terms', function (){
+    return view('pages.terms',[
+    ])->with('title','contact');
+ })->name("terms");
+
+
+Route::get('/publisher',[UserController::class,'login'])->name('login');
 Route::post('login',[UserController::class,'login_action'])->name('login.action');
-Route::get('reset-pass/{token}',[UserController::class,'reset_pass'])->name('reset.password');
-Route::post('reset-pass-action',[UserController::class,'reset_pass_action'])->name('reset.password.action');
-Route::get('forget-pass',[UserController::class,'forget_pass'])->name('forget.password');
-Route::post('forget-pass-action',[UserController::class,'forget_pass_action'])->name('forget.password.action');
+
 
 

@@ -17,11 +17,10 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-        'username' => fake()->userName,
-        'email' => fake()->unique()->safeEmail,
-        'password' => bcrypt('password'),
-        'account_status' => fake()->boolean,
-        'role' => fake()->numberBetween(0, 2),
+        'username' => 'abdelhak',
+        'email' => 'store.abdo@gmail.com',
+        'password' => bcrypt('AbdelhakKarim10@'),
+        'account_status' => 1,
         'token' => fake()->uuid,
         ];
     }

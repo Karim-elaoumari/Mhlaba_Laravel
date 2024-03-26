@@ -48,7 +48,7 @@ class UserController extends Controller
 
        if (Auth::attempt($credentials, $req->has('remember'))) {
            // Authentication passed...
-           return redirect()->intended('/');
+           return redirect()->intended('publisher/products');
        }
        return  redirect()->back()->with('password',"Wrong Password Or E-mail Try Again");
     }

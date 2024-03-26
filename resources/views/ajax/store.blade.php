@@ -6,14 +6,14 @@
         }
     });
 $(document).ready(function(){
-    $(document).on('click','.add_plat',function(e){
+    $(document).on('click','.add_product',function(e){
         e.preventDefault();
-        let arrs = ['title','price','image','categorie','description'];
+        let arrs = ['title','price','x_price','main_image','desc','st1_image','st2_image','st3_image','st4_image'];
         for(arr of arrs){
             $('#'+arr+'_err').html(' ')
         }
         $.ajax({
-            url:'{{route("Plat.store")}}',
+            url:'{{route("Product.store")}}',
             method:'post',
             data:new FormData($("#addForm")[0]),
             contentType: false,
@@ -23,7 +23,7 @@ $(document).ready(function(){
                 if(res.status=='success'){
                     Swal.fire({
                     title: 'Success',
-                    text: 'New Plat has been Added',
+                    text: 'New Product has been Added',
                     icon: 'success',
                     confirmButtonText: 'OK'
 
@@ -47,23 +47,80 @@ $(document).ready(function(){
 });
 
 
-$(document).on('click', '#edit-plat', function() {
+$(document).ready(function(){
+    $(document).on('click','#add_order',function(e){
+        e.preventDefault();
+        // hide form and show loading
+        $('#order_form').hide();
+        $('#spinner').show();
+        let arrs = ['full_name','quantity','city','address','phone'];
+        for(arr of arrs){
+            $('#'+arr+'_err').html(' ')
+        }
+        $.ajax({
+            url:'{{route("Order.store")}}',
+            method:'post',
+            data:new FormData($("#order_form")[0]),
+            contentType: false,
+            cache: false,
+            processData:false,
+            success:function(res){
+                if(res.status=='success'){
+                   
+                    $('#spinner').hide();
+                    Swal.fire({
+                    title: 'Success',
+                    text: ' تم اضافة طلبك بنجاح',
+                    icon: 'success',
+                    confirmButtonText: 'حسنا'
+
+                    }).then((result) =>{
+                        location.reload();
+                    })
+                    
+                }
+              
+            },
+            error:function(err){
+                $('#order_form').show();
+                $('#spinner').hide();
+                let error = err.responseJSON;
+                $.each(error.errors,function(index,value){
+                    console.log(index+'reson:  '+value)
+                    $('#'+index+'_err').html(value)
+                });
+                }
+            
+        })
+    })
+});
+
+
+$(document).on('click', '#edit-Product', function() {
   let id = $(this).data('id');
   $.ajax({
-    url: "{{ route('Plat.edit', ':id') }}".replace(':id', id),
+    url: "{{ route('Product.edit', ':id') }}".replace(':id', id),
     method: 'get',
    
     success: function(res) {
         if(res.status=='success'){
         $('#up_title').val(res.data.title);
         $('#up_price').val(res.data.price);
-        $('#up_categorie').val(res.data.categorie_id);
         $('#up_description').val(res.data.desc);
-        $('#plat_id').val(res.data.id);
-        $('#old_image').attr('src', "{{asset('images/')}}" + "/"+res.data.image);
+        $('#product_id').val(res.data.id);
+        $('#old_image').attr('src', "{{asset('images/')}}" + "/"+res.data.main_image);
+        $('#old_st1_image').attr('src', "{{asset('images/')}}" + "/"+res.data.st1_image);
+        $('#old_st2_image').attr('src', "{{asset('images/')}}" + "/"+res.data.st2_image);
+        $('#old_st3_image').attr('src', "{{asset('images/')}}" + "/"+res.data.st3_image);
+        $('#old_st4_image').attr('src', "{{asset('images/')}}" + "/"+res.data.st4_image);
+        $('#up_x_price').val(res.data.x_price);
         
 
-        $('#edit_plat_Modal').modal('show');
+
+        
+        
+
+        $('#edit_Product_Modal').modal('show');
           
         }
    
@@ -71,7 +128,7 @@ $(document).on('click', '#edit-plat', function() {
     error:function(err){
         Swal.fire({
         title: 'Error! Not Found',
-        text: 'This Plat is not existing Try Again',
+        text: 'This Product is not existing Try Again',
         icon: 'error',
         confirmButtonText: 'OK'
         })
@@ -88,25 +145,53 @@ $('#up_image').change(function(){
     reader.readAsDataURL(this.files[0]);
 });
 
+$('#up_st1_image').change(function(){
+    let reader = new FileReader();
+    reader.onload = function(e){$('#old_st1_image').attr('src', e.target.result);}
+    reader.readAsDataURL(this.files[0]);
+});
+
+$('#up_st2_image').change(function(){
+    let reader = new FileReader();
+    reader.onload = function(e){$('#old_st2_image').attr('src', e.target.result);}
+    reader.readAsDataURL(this.files[0]);
+});
+$('#up_st3_image').change(function(){
+    let reader = new FileReader();
+    reader.onload = function(e){$('#old_st3_image').attr('src', e.target.result);}
+    reader.readAsDataURL(this.files[0]);
+});
+
+$('#up_st4_image').change(function(){
+    let reader = new FileReader();
+    reader.onload = function(e){$('#old_st4_image').attr('src', e.target.result);}
+    reader.readAsDataURL(this.files[0]);
+});
 
 
 
 
-$(document).on('click', '.edit_plat', function(e) {
+
+
+$(document).on('click', '.edit_product', function(e) {
     e.preventDefault();
-    let id = $('#plat_id').val();
-    $.ajax({
-        url: "{{ route('Plat.update',':id') }}".replace(':id', id),
+    let id = $('#product_id').val();
+    let arrs = ['title','price','x_price','main_image','desc','st1_image','st2_image','st3_image','st4_image'];
+        for(arr of arrs){
+            $('#'+arr+'_err').html(' ')
+        }
+    $.ajax({ 
+        url: "{{ route('Product.update',':id') }}".replace(':id', id),
         method: 'post',
         data: new FormData($("#edit_Form")[0]),
-        contentType: false,
+        contentType: false, 
         cache: false,
         processData:false,
         success: function(res) {
            
             Swal.fire({
         title: 'Success',
-        text: 'This Plat has been Updated',
+        text: 'This Product has been Updated',
         icon: 'success',
         confirmButtonText: 'OK'
 
@@ -120,7 +205,7 @@ $(document).on('click', '.edit_plat', function(e) {
             let error = err.responseJSON;
             $.each(error.errors, function(index, value) {
                 console.log(index + ' reason: ' + value)
-                $('#' + index + '_err').html(value)
+                $('#up_' + index + '_err').html(value)
             });
         }
     });
@@ -130,7 +215,7 @@ $(document).on('click', '.edit_plat', function(e) {
 
 
 
-$(document).on('click', '#delete-plat', function() {
+$(document).on('click', '#delete-product', function() {
   let id = $(this).data('id');
   Swal.fire({
   title: 'Are you sure?',
@@ -143,13 +228,13 @@ $(document).on('click', '#delete-plat', function() {
 }).then((result) => {
   if (result.isConfirmed) {
     $.ajax({
-    url: "{{ route('Plat.destroy', ':id') }}".replace(':id', id),
+    url: "{{ route('Product.destroy', ':id') }}".replace(':id', id),
     method: 'delete',
    
     success: function(res) {
         Swal.fire({
         title: 'Success',
-        text: 'This Plat has been Deleted',
+        text: 'This Product has been Deleted',
         icon: 'success',
         confirmButtonText: 'OK'
 
@@ -161,7 +246,7 @@ $(document).on('click', '#delete-plat', function() {
     error:function(err){
         Swal.fire({
         title: 'Error! Not Found',
-        text: 'This Plat is not existing Try Again',
+        text: 'This Product is not existing Try Again',
         icon: 'error',
         confirmButtonText: 'OK'
         })
@@ -175,29 +260,81 @@ $(document).on('click', '#delete-plat', function() {
 });
 
 
-$(document).on('click', '#change_role', function() {
+
+
+
+
+
+
+// order 
+
+$(document).on('click', '#edit-order', function() {
+  let id = $(this).data('id');
+        $('#order_id').val(id);
+
+        $('#edit_Order_Modal').modal('show');
+});
+
+
+$(document).on('click', '.edit_order', function(e) {
+    e.preventDefault();
+    let id = $('#order_id').val();
+            $('#status_err').html(' ')
+    
+    $.ajax({ 
+        url: "{{ route('Order.update',':id') }}".replace(':id', id),
+        method: 'post',
+        data: new FormData($("#edit_order_form")[0]),
+        contentType: false, 
+        cache: false,
+        processData:false,
+        success: function(res) {
+           
+            Swal.fire({
+        title: 'Success',
+        text: 'This Oreder has been Updated',
+        icon: 'success',
+        confirmButtonText: 'OK'
+
+        }).then((result) =>{
+            location.reload();
+        })
+
+           
+        },
+        error: function(err) {
+            let error = err.responseJSON;
+            $.each(error.errors, function(index, value) {
+                console.log(index + ' reason: ' + value)
+                $(index +'_err').html(value)
+            });
+        }
+    });
+});
+
+
+
+
+$(document).on('click', '#delete-order', function() {
   let id = $(this).data('id');
   Swal.fire({
   title: 'Are you sure?',
-  text: "You whant To change Role of this User",
+  text: "You won't be able to revert this!",
   icon: 'warning',
   showCancelButton: true,
   confirmButtonColor: '#3085d6',
   cancelButtonColor: '#d33',
-  confirmButtonText: 'Yes, Change!'
+  confirmButtonText: 'Yes, delete it!'
 }).then((result) => {
   if (result.isConfirmed) {
     $.ajax({
-    url: "{{ route('change_status') }}",
-    method: "POST",
-    data: {
-        id: id
-    },
+    url: "{{ route('Order.destroy', ':id') }}".replace(':id', id),
+    method: 'delete',
    
     success: function(res) {
         Swal.fire({
         title: 'Success',
-        text: 'This User has been Changed Role',
+        text: 'This Order has been Deleted',
         icon: 'success',
         confirmButtonText: 'OK'
 
@@ -209,7 +346,7 @@ $(document).on('click', '#change_role', function() {
     error:function(err){
         Swal.fire({
         title: 'Error! Not Found',
-        text: 'This User is not existing Try Again',
+        text: 'This Order is not existing Try Again',
         icon: 'error',
         confirmButtonText: 'OK'
         })
